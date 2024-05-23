@@ -1,15 +1,11 @@
-from django.shortcuts import render
-from .models import Reservas
 from django.shortcuts import render, redirect
+from .models import Reservas, Login
 import openpyxl
 from django.http import HttpResponse
+from datetime import datetime
 
-
-from .models import Login
-
-# Create your views here.
 def index(request):
-    return render(request,"index.html")
+    return render(request, "index.html")
 
 def reservar(request):
     if request.method == 'POST':
@@ -21,16 +17,24 @@ def reservar(request):
         duracion = request.POST.get("duracion")
         cel = request.POST.get("cel")
         
-        # Asignar el valor de pago antes de la verificación
-        pago = request.POST.get("pago")
-        if pago == 'on':
-            pago = True
+        # Verificar si ya hay una reserva para la fecha y hora especificadas
+        fecha_hora = datetime.strptime(fecha + ' ' + hora, '%Y-%m-%d %H:%M')
+        reservas_existente = Reservas.objects.filter(fecha=fecha_hora).exists()
+
+        if reservas_existente:
+            return render(request, 'reservar.html', {'mensaje': 'Ya hay una reserva para esta fecha y hora'})
         else:
-            pago = False
-        
-        reserva = Reservas(nombre=nombre, apellido=apellido, cancha=cancha, fecha=fecha, hora=hora, duracion=duracion, cel=cel, pago=pago)
-        reserva.save()
-        return render(request, 'reservar.html', {'mensaje': 'Se generó una reserva a nombre de: ' + nombre})
+            # Asignar el valor de pago antes de la verificación
+            pago = request.POST.get("pago")
+            if pago == 'on':
+                pago = True
+            else:
+                pago = False
+            
+            # Guardar la reserva
+            reserva = Reservas(nombre=nombre, apellido=apellido, cancha=cancha, fecha=fecha_hora, hora=hora, duracion=duracion, cel=cel, pago=pago)
+            reserva.save()
+            return render(request, 'reservar.html', {'mensaje': 'Se generó una reserva a nombre de: ' + nombre})
     return render(request, "reservar.html")
 
 def reservas(request):
@@ -74,4 +78,3 @@ def exportar_excel(request):
 
     workbook.save(response)
     return response
-
