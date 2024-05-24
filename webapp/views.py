@@ -34,7 +34,7 @@ def reservar(request):
             # Guardar la reserva
             reserva = Reservas(nombre=nombre, apellido=apellido, cancha=cancha, fecha=fecha, hora=hora, duracion=1, cel=cel, pago=pago)
             reserva.save()
-            return render(request, 'reservar.html', {'mensaje': 'Se generó una reserva a nombre de: ' + nombre})
+            return render(request, 'reservar.html', {'mensaje': 'Se generó una reserva a nombre de: ' + nombre + ' recuerda realizar el pago y enviar el comprobante'})
     return render(request, "reservar.html")
 
 def reservas(request):
