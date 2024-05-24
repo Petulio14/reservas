@@ -58,7 +58,7 @@
             {% csrf_token %}
             <button type="submit" class="btn btn-primary">Exportar a Excel</button>
         </form>
-
+    
         <table class="table">
             <thead>
                 <tr>
@@ -71,6 +71,7 @@
                     <th scope="col">Duración</th>
                     <th scope="col">Celular</th>
                     <th scope="col">Pago</th>
+
                 </tr>
             </thead>
             <tbody>
@@ -81,29 +82,34 @@
                     <td>{{ reserva.apellido }}</td>
                     <td>{{ reserva.cancha }}</td>
                     <td>{{ reserva.fecha }}</td>
-                    <td>{{ reserva.hora}}</td>
+                    <td>{{ reserva.hora }}</td>
                     <td>{{ reserva.duracion }}</td>
                     <td>{{ reserva.cel }}</td>
-                    <td>{{ reserva.pago }}</td>
+                    <td>
+                        <input type="checkbox" name="pago" {% if reserva.pago %}checked{% endif %} data-reserva-id="{{ reserva.id }}">
+                    </td>
                 </tr>
-                {%endfor%}
+                {% endfor %}
             </tbody>
         </table>
+    
+        <button id="guardar-todo" class="btn btn-success">Guardar</button>
     </main>
-
-    <!-- Footer Start -->
-    <div class="container-fluid bg-dark text-secondary px-5 mt-5">
-        <div class="row gx-5">
-            <div class="col-lg-8 col-md-6">
-                <div class="row gx-5">
-                    <div class="col-lg-6">
-                        <p class="text-light"><img src="{% static 'img/logo.png' %}" alt="logo" width="100px">2024
-                            &copy; Futbol y Gol</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    
+    <script>
+        document.getElementById("guardar-todo").addEventListener("click", function() {
+            // Obtener todos los checkboxes de pago
+            const checkboxes = document.querySelectorAll('input[name="pago"]');
+            checkboxes.forEach(function(checkbox) {
+                const reservaId = checkbox.getAttribute("data-reserva-id");
+                const pagoValue = checkbox.checked ? 'on' : 'off';
+    
+                // Enviar los datos al servidor (puedes usar AJAX o fetch aquí)
+                // Por simplicidad, asumimos que ya se ha implementado la lógica en el servidor para actualizar la base de datos
+                console.log(`Reserva ID: ${reservaId}, Pago: ${pagoValue}`);
+            });
+        });
+    </script>
     <!-- Footer End -->
 
 

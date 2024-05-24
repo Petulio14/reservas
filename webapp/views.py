@@ -17,8 +17,6 @@ def reservar(request):
         duracion = request.POST.get("duracion")
         cel = request.POST.get("cel")
         
- 
-
         reservas_existente = Reservas.objects.filter(cancha=cancha,fecha=fecha,hora=hora).exists()
 
         if reservas_existente:
@@ -38,6 +36,18 @@ def reservar(request):
     return render(request, "reservar.html")
 
 def reservas(request):
+    if request.method == 'POST':
+        # Obtener el ID de la reserva y el valor del checkbox de pago
+        reserva_id = request.POST.get("reserva_id")
+        pago = request.POST.get("pago")
+
+        # Buscar la reserva por ID
+        reserva = Reservas.objects.get(id=reserva_id)
+
+        # Actualizar el valor de pago
+        reserva.pago = True if pago == 'on' else False
+        reserva.save()
+
     reservas = Reservas.objects.all()
     datos = {'reservas': reservas}
     return render(request, "reservas.html", datos)
@@ -59,6 +69,7 @@ def login(request):
         else: 
             mensaje = 'Credenciales inválidas. Por favor, inténtalo de nuevo.'
     return render(request, "login.html", {'mensaje': mensaje})
+
 
 def exportar_excel(request):
     response = HttpResponse(content_type='application/ms-excel')
