@@ -76,8 +76,10 @@
 
         <div class="row justify-content-center align-items-center g-2">
             <div class="col-6 p-5">
-                {% if mensaje %}
-                <p class="p-3 bg-success m-2" style="color:black">{{ mensaje }}</p>
+                {% if mensaje == 'Ya hay una reserva para esta cancha en la misma fecha y hora' %}
+                    <p class="p-3 bg-danger m-2" style="color:white">{{ mensaje }}</p>
+                {% else %}
+                    <p class="p-3 bg-success m-2" style="color:black">{{ mensaje }}</p>
                 {% endif %}
                 <h1>Formulario de reservas</h1>
 
@@ -96,7 +98,8 @@
 
                     <div class="mb-3">
                         <label for="exampleInputPassword1" class="form-label">Cancha:</label>
-                        <select name="cancha" class>
+                        <select name="cancha" required>
+                            <option value="" disabled selected>Selecciona una opción</option>
                             <option value="futbol5">futbol 5</option>
                             <option value="futbol7">futbol 7</option>
                             <option value="doble">cancha doble</option>

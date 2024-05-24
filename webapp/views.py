@@ -17,12 +17,12 @@ def reservar(request):
         duracion = request.POST.get("duracion")
         cel = request.POST.get("cel")
         
-        # Verificar si ya hay una reserva para la fecha y hora especificadas
-        fecha_hora = datetime.strptime(fecha + ' ' + hora, '%Y-%m-%d %H:%M')
-        reservas_existente = Reservas.objects.filter(fecha=fecha_hora).exists()
+ 
+
+        reservas_existente = Reservas.objects.filter(cancha=cancha,fecha=fecha,hora=hora).exists()
 
         if reservas_existente:
-            return render(request, 'reservar.html', {'mensaje': 'Ya hay una reserva para esta fecha y hora'})
+            return render(request, 'reservar.html', {'mensaje': 'Ya hay una reserva para esta cancha en la misma fecha y hora'})
         else:
             # Asignar el valor de pago antes de la verificación
             pago = request.POST.get("pago")
